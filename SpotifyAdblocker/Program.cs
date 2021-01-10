@@ -1,9 +1,7 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
-using System.Xml.XPath;
 
 namespace SpotifyAdblocker
 {
@@ -20,24 +18,15 @@ namespace SpotifyAdblocker
                 if (File.Exists(zipPath)) File.Delete(zipPath);
                 if (Directory.Exists(folderPath)) Directory.Delete(folderPath, true);
 
-                var url = "https://github.com/mrpond/BlockTheSpot/releases/latest";
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                StreamReader sr = new StreamReader(response.GetResponseStream());
-                string sourceCode = sr.ReadToEnd();
-                HtmlDocument document = new HtmlDocument();
-                document.LoadHtml(sourceCode);
-                XPathNavigator navigator = (HtmlNodeNavigator)document.CreateNavigator();
-                string link = "https://github.com" + navigator.SelectSingleNode("/html/body/div[4]/div/main/div[2]/div/div[2]/div/div[2]/details/div/div/div[1]/a").GetAttribute("href", string.Empty);
-
                 using (WebClient wc = new WebClient())
                 {
-                    wc.DownloadFile(new Uri(link), zipPath);
+                    wc.DownloadFile(new Uri("https://github.com/mrpond/BlockTheSpot/releases/latest/download/chrome_elf.zip"), zipPath);
                     ZipFile.ExtractToDirectory(zipPath, folderPath);
                     File.Delete(zipPath);
                     GetSpotifyDirectory();
                 }
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.Clear();
                 Console.WriteLine(ex.ToString());
@@ -68,7 +57,8 @@ namespace SpotifyAdblocker
                     Console.WriteLine("Successful! You can close this window and run the spotify. Enjoy :)");
                     Console.ReadKey();
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.Clear();
                 Console.WriteLine(ex.ToString());
